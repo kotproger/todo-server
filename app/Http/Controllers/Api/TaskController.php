@@ -26,7 +26,7 @@ class TaskController extends ApiController
     {
         return ResponseService::SendJson(
             true,
-            ['items' => $this->service->getItems()->toArray() ]
+            $this->service->getItems()->toArray()
         );
     }
 
@@ -51,7 +51,7 @@ class TaskController extends ApiController
         $task = $this->sevice->store($request, $task);
         return ResponseService::SendJson(
             true,
-            ['item' => $task->toArray()]
+            $task->toArray()
         );
     }
 
@@ -65,7 +65,7 @@ class TaskController extends ApiController
     {
         return ResponseService::SendJson(
             true,
-            ['item' => $task->toArray()]
+            $task->toArray()
         );
     }
 
@@ -92,7 +92,7 @@ class TaskController extends ApiController
         $task = $this->sevice->store($request, $task);
         return ResponseService::SendJson(
             true,
-            ['item' => $task->toArray()]
+            $task->toArray()
         );
     }
 
