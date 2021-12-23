@@ -12,13 +12,14 @@ class TaskService
     }
 
     public function store(Request $request, Task $task){
+        
         $task->fill($request->only($task->getFillable()));
         $task->save();
 
         return $task;
     }
 
-    public function delete(Request $request){
-        return  Task::where('id',$request->only(['id']))->delete();
+    public function delete(Task $task){
+        return  $task->delete();
     }
 }

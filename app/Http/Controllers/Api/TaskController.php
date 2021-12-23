@@ -7,6 +7,8 @@ use App\Services\ResponseService;
 use App\Services\TaskService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ApiController;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 
 class TaskController extends ApiController
@@ -48,7 +50,7 @@ class TaskController extends ApiController
      */
     public function store(Request $request, Task $task)
     {
-        $task = $this->sevice->store($request, $task);
+        $task = $this->service->store($request, $task);
         return ResponseService::SendJson(
             true,
             $task->toArray()
@@ -84,30 +86,47 @@ class TaskController extends ApiController
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Task $task
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Task $task)
     {
-        $task = $this->sevice->store($request, $task);
-        return ResponseService::SendJson(
-            true,
-            $task->toArray()
-        );
+        //$v = Validator::make($task->toArray(), [
+        //    'text' => 'not_regex:/.*!+.*/i'
+        //]);
+        
+        $validator = Validator::make($request->all(), ['text' => 'not_regex:/.*!+.*/i']);
+
+        if ($validator->fails()) {
+            return ResponseService::SendJson(
+                false,
+                [],
+                200,
+                ['Stop yelling at me !!!!!']
+            );
+          } else {
+            $result = $this->service->store($request, $task);
+            return ResponseService::SendJson(
+                true,
+                $result->toArray()
+            );
+          }
+
+        
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  Task $task
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(Task $task)
     {
-        $result = $this->sevice->delete($request);
+        //dd($task);
         return ResponseService::SendJson(
-            $result,
-            []
+            true,
+            $this->service->delete($task)
         );
     }
 }
