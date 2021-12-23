@@ -50,11 +50,23 @@ class TaskController extends ApiController
      */
     public function store(Request $request, Task $task)
     {
-        $task = $this->service->store($request, $task);
-        return ResponseService::SendJson(
-            true,
-            $task->toArray()
-        );
+        $validator = Validator::make($request->all(), ['text' => 'not_regex:/.*!+.*/i']);
+
+        if ($validator->fails()) {
+            return ResponseService::SendJson(
+                false,
+                [],
+                403,
+                ['Stop yelling at me !!!!!']
+            );
+        } else {
+
+            $task = $this->service->store($request, $task);
+            return ResponseService::SendJson(
+                true,
+                $task->toArray()
+            );
+        };
     }
 
     /**
@@ -91,9 +103,6 @@ class TaskController extends ApiController
      */
     public function update(Request $request, Task $task)
     {
-        //$v = Validator::make($task->toArray(), [
-        //    'text' => 'not_regex:/.*!+.*/i'
-        //]);
         
         $validator = Validator::make($request->all(), ['text' => 'not_regex:/.*!+.*/i']);
 
